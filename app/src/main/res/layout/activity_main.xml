@@ -18,4 +18,10 @@
 <!--        android:name="com.aoinc.nearbyplaces2.view.MapFragment"-->
 <!--        />-->
 
+    <com.aoinc.nearbyplaces2.view.custom.PermissionDeniedView
+        android:id="@+id/permission_denied_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="invisible"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
