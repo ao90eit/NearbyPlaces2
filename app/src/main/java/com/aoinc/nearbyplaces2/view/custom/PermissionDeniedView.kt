@@ -19,12 +19,12 @@ class PermissionDeniedView(context: Context, attributeSet: AttributeSet)
         .getSystemService(Context.LAYOUT_INFLATER_SERVICE)
             as LayoutInflater
 
-    private lateinit var messageTextView: TextView
+    private var messageTextView: TextView
     var message: String
         get() = messageTextView.text.toString().trim()
         set(value) { messageTextView.text = value }
 
-    private lateinit var settingsButton: Button
+    private var settingsButton: Button
 
     init {
         layoutInflater.inflate(R.layout.permission_denied_layout, this, true)

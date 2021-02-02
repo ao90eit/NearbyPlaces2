@@ -11,12 +11,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-<!--    <androidx.fragment.app.FragmentContainerView-->
-<!--        android:id="@+id/map_fragment_containerView"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"-->
-<!--        android:name="com.aoinc.nearbyplaces2.view.MapFragment"-->
-<!--        />-->
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/main_fragment_containerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
     <com.aoinc.nearbyplaces2.view.custom.PermissionDeniedView
         android:id="@+id/permission_denied_view"

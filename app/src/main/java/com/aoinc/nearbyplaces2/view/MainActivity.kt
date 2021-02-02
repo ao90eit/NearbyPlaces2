@@ -16,20 +16,25 @@ import com.bumptech.glide.Glide
 
 class MainActivity : AppCompatActivity() {
 
-    // view model
+    // View Model
     private val mapViewModel: MapViewModel by viewModels()
 
-    // permissions
+    // Permissions
     private val PERMISSION_REQUEST_CODE: Int = 555
 
-    // layout views
+    // Fragments
+    private val mapFragment = MapFragment()
+
+    // Connected Views
     private lateinit var testImage: ImageView
+//    private lateinit var mapFragmentContainerView: FragmentContainerView
     private lateinit var permissionDeniedOverlay: PermissionDeniedView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+//        mapFragmentContainerView = findViewById(R.id.map_fragment_containerView)
         permissionDeniedOverlay = findViewById(R.id.permission_denied_view)
 
         /*******  TESTS  *******/
@@ -68,6 +73,12 @@ class MainActivity : AppCompatActivity() {
             requestLocationPermissions()
     }
 
+    private fun loadMapFragment() {
+        supportFragmentManager.beginTransaction()
+            .add(R.id.main_fragment_containerView, mapFragment)
+            .commit()
+    }
+
     private fun hasLocationPermission(): Boolean =
         ActivityCompat.checkSelfPermission(this,
             android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
@@ -78,7 +89,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun onLocationPermissionsGranted() {
         permissionDeniedOverlay.visibility = View.INVISIBLE
-//        loadMainFragments()   // continue loading program
+        loadMapFragment()   // continue loading program
     }
 
     private fun onLocationPermissionsDenied() {

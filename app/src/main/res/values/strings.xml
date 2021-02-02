@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">NearbyPlaces2</string>
+    <string name="app_name">Bless You!</string>
     <string name="permission_denied_text">This app requires %s permissions to function. You can change permissions in your app settings.</string>
     <string name="location">location</string>
     <string name="open_app_settings_button">Open app settings</string>
