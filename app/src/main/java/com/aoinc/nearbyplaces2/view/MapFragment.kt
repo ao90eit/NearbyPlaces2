@@ -13,9 +13,12 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.aoinc.nearbyplaces2.R
+import com.aoinc.nearbyplaces2.model.NearbyPlaces
 import com.aoinc.nearbyplaces2.viewmodel.MapViewModel
 import com.google.android.gms.maps.*
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 
 class MapFragment : Fragment(), LocationListener, OnMapReadyCallback {
@@ -25,9 +28,12 @@ class MapFragment : Fragment(), LocationListener, OnMapReadyCallback {
 
     // Location Polling
     private lateinit var locationManager: LocationManager
+    private lateinit var curLocation: LatLng
 
     // Map
     private lateinit var gmap: GoogleMap
+    private lateinit var userMarker: Marker
+    private val markers: MutableList<Marker> = mutableListOf()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -45,12 +51,22 @@ class MapFragment : Fragment(), LocationListener, OnMapReadyCallback {
 //        val mapOptions = customizeMap()
         val mapFragment = childFragmentManager.findFragmentById(R.id.map_fragment) as SupportMapFragment
         mapFragment.getMapAsync(this)
+
+        // Observe data changes
+        mapViewModel.nearbyPlaceResults.observe(viewLifecycleOwner, {
+            if (this::gmap.isInitialized)
+                it.searchResults?.let { results ->
+                    Log.d("TAG_X", "result in")
+                    placeNearbyMarkers(results)
+                }
+        })
     }
 
     @SuppressLint("MissingPermission")
     // Map will not even load without this permission, check not needed
     private fun enableLocationPolling(enabled: Boolean) {
         if (enabled)
+            // TODO: make this long and wide to avoid constant updates
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000L, 20f, this)
         else
             locationManager.removeUpdates(this)
@@ -58,11 +74,13 @@ class MapFragment : Fragment(), LocationListener, OnMapReadyCallback {
 
     override fun onLocationChanged(location: Location) {
         Log.d("TAG_X", "current location -> LAT: ${location.latitude}, LONG: ${location.longitude}")
+        curLocation = LatLng(location.latitude, location.longitude)
+        mapViewModel.updateLocation(curLocation)
 
         if (this::gmap.isInitialized) {
-            val curLocation = LatLng(location.latitude, location.longitude)
-            gmap.addMarker(MarkerOptions().position(curLocation).title("My Location"))
-            gmap.moveCamera(CameraUpdateFactory.newLatLngZoom(curLocation, 14f))
+            if (this::userMarker.isInitialized) userMarker.remove()
+            userMarker = gmap.addMarker(MarkerOptions().position(curLocation).title("My Location"))
+            gmap.moveCamera(CameraUpdateFactory.newLatLngZoom(curLocation, 12f))
         }
     }
 
@@ -89,8 +107,36 @@ class MapFragment : Fragment(), LocationListener, OnMapReadyCallback {
 
     private fun customizeMap() {
         gmap.setMaxZoomPreference(17f)
-        gmap.setMinZoomPreference(12f)
-        gmap.uiSettings.isZoomControlsEnabled = true
+        gmap.setMinZoomPreference(7f)
+//        gmap.uiSettings.isZoomControlsEnabled = true
         gmap.uiSettings.isCompassEnabled = true
+    }
+
+    private fun placeNearbyMarkers(placesList: List<NearbyPlaces.SearchResult>) {
+        // clear first
+        removeAllMarkers()
+
+        Log.d("TAG_X", "in place markers")
+
+        // add second
+        for (place in placesList) {
+            var lat = 0.0
+            var lng = 0.0
+
+            place.geometry?.location?.lat?.let { lat = it }
+            place.geometry?.location?.lng?.let { lng = it }
+
+            markers.add(gmap.addMarker(MarkerOptions()
+                .position(LatLng(lat,lng))
+                .title(place.name)
+//                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+            ))
+        }
+    }
+
+    private fun removeAllMarkers() {
+        for (m in markers)
+            m.remove()
+        markers.clear()
     }
 }

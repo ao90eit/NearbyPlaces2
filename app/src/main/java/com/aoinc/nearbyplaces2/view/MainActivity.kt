@@ -4,7 +4,8 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.ImageView
+import android.widget.Button
+import android.widget.ImageButton
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -12,7 +13,7 @@ import com.aoinc.nearbyplaces2.R
 import com.aoinc.nearbyplaces2.util.NetworkConstants
 import com.aoinc.nearbyplaces2.view.custom.PermissionDeniedView
 import com.aoinc.nearbyplaces2.viewmodel.MapViewModel
-import com.bumptech.glide.Glide
+import com.google.android.material.slider.Slider
 
 class MainActivity : AppCompatActivity() {
 
@@ -26,16 +27,38 @@ class MainActivity : AppCompatActivity() {
     private val mapFragment = MapFragment()
 
     // Connected Views
-    private lateinit var testImage: ImageView
-//    private lateinit var mapFragmentContainerView: FragmentContainerView
     private lateinit var permissionDeniedOverlay: PermissionDeniedView
+    private lateinit var detailFragment: View
+    private lateinit var radiusSlider: Slider
+    private lateinit var worshipTypeButton: ImageButton
+    private lateinit var searchButton: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-//        mapFragmentContainerView = findViewById(R.id.map_fragment_containerView)
         permissionDeniedOverlay = findViewById(R.id.permission_denied_view)
+        detailFragment = findViewById(R.id.detail_fragment_container)
+        radiusSlider = findViewById(R.id.search_radius_slider)
+        worshipTypeButton = findViewById(R.id.place_type_menu_button)
+        searchButton = findViewById(R.id.search_button)
+
+//        radiusSlider.setLabelFormatter { value: Float ->
+//            val format = NumberFormat.getNumberInstance()
+//            format.maximumFractionDigits = 1
+//            format.format(value/1000.0)
+//        }
+        
+        worshipTypeButton.setOnClickListener {
+            // TODO: inflate place type menu here
+        }
+
+        searchButton.setOnClickListener {
+            mapViewModel.curLocation?.let {
+                // TODO: fix place type input
+                mapViewModel.getNearbyPlaces(radiusSlider.value.toString().trim(), "church")
+            }
+        }
 
         /*******  TESTS  *******/
 //        testImage = findViewById(R.id.test_image)
@@ -121,21 +144,6 @@ class MainActivity : AppCompatActivity() {
 
 
 
-
-
-    // TEST NEARBY PLACES REQUEST
-    private fun getNearbyPlaces(location: String, radius: String, placeType: String = "", keywords: String = "") {
-        val queryMap = mapOf(
-            NetworkConstants.KEY_KEY to NetworkConstants.KEY_VALUE,
-            NetworkConstants.LOCATION_KEY to location,
-            NetworkConstants.RADIUS_KEY to radius,
-            NetworkConstants.TYPE_KEY to placeType,
-            NetworkConstants.KEYWORD_KEY to keywords
-        )
-
-        mapViewModel.getNearbyPlaces(queryMap)
-    }
-
     // TEST GEOCODE REQUEST
     private fun getGeocodeData(placeID: String) {
         val queryMap = mapOf(
@@ -143,7 +151,7 @@ class MainActivity : AppCompatActivity() {
             NetworkConstants.PLACE_ID_KEY to placeID
         )
 
-        mapViewModel.getGeocodeData(queryMap)
+        mapViewModel.requestGeocodeData(queryMap)
     }
 
     // TEST FIRST PHOTO REQUEST
@@ -156,7 +164,7 @@ class MainActivity : AppCompatActivity() {
                     NetworkConstants.MAX_HEIGHT_KEY, maxHeight)
 
         Log.d("TAG_X", "first photo URL -> $firstPhotoURL")
-        Glide.with(this).load(firstPhotoURL).into(testImage)
+//        Glide.with(this).load(firstPhotoURL).into(testImage)
     }
 
     // TEST PLACE DETAILS REQUEST
@@ -166,6 +174,6 @@ class MainActivity : AppCompatActivity() {
             NetworkConstants.PLACE_ID_KEY to placeID
         )
 
-        mapViewModel.getPlaceDetails(queryMap)
+        mapViewModel.requestPlaceDetails(queryMap)
     }
 }

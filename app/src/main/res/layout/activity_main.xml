@@ -15,26 +15,86 @@
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/main_fragment_containerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:background="@color/light_beige"/>
 
-<!--    <fragment xmlns:android="http://schemas.android.com/apk/res/android"-->
-<!--        xmlns:map="http://schemas.android.com/apk/res-auto"-->
-<!--        android:name="com.google.android.gms.maps.SupportMapFragment"-->
-<!--        android:id="@+id/map"-->
+    <com.google.android.material.slider.Slider
+        android:id="@+id/search_radius_slider"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:valueFrom="1000"
+        android:valueTo="10000"
+        android:stepSize="1000"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/place_type_menu_button"
+        app:layout_constraintBottom_toTopOf="@id/barrier"
+        />
+
+    <ImageButton
+        android:id="@+id/place_type_menu_button"
+        android:layout_width="wrap_content"
+        android:layout_height="52dp"
+        app:layout_constraintBottom_toTopOf="@id/barrier"
+        app:layout_constraintStart_toEndOf="@id/search_radius_slider"
+        app:layout_constraintEnd_toStartOf="@id/search_button"
+        android:src="@drawable/ic_baseline_keyboard_arrow_up_24"
+        />
+
+    <!--    <com.google.android.material.button.MaterialButton-->
+    <!--        android:id="@+id/place_type_menu"-->
+    <!--        android:layout_width="0dp"-->
+    <!--        android:layout_height="52dp"-->
+    <!--        app:layout_constraintBottom_toTopOf="@id/detail_fragment_container"-->
+    <!--        app:layout_constraintStart_toEndOf="@id/search_radius_seekBar"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        android:drawableEnd="@drawable/ic_baseline_keyboard_arrow_up_24"-->
+    <!--        app:icon="@drawable/ic_baseline_keyboard_arrow_up_24"-->
+    <!--        android:textSelectHandle="@drawable/ic_baseline_keyboard_arrow_up_24"-->
+    <!--        />-->
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/search_button"
+        android:layout_width="wrap_content"
+        android:layout_height="52dp"
+        app:layout_constraintBottom_toTopOf="@id/barrier"
+        app:layout_constraintStart_toEndOf="@id/place_type_menu_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:src="@drawable/ic_baseline_keyboard_arrow_up_24"
+        android:text="Search"
+        />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="top"
+        app:constraint_referenced_ids="detail_fragment_container" />
+
+
+    <fragment
+        android:id="@+id/detail_fragment_container"
+        android:name="com.aoinc.nearbyplaces2.view.PlaceDetailFragment"
+        tools:layout="@layout/place_detail_layout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHeight_percent=".3"
+        />
+
+<!--    <androidx.fragment.app.FragmentContainerView-->
+<!--        android:id="@+id/detail_fragment_container"-->
+<!--        android:name="com.aoinc.nearbyplaces2.view.PlaceDetailFragment"-->
 <!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"-->
-<!--        map:cameraBearing="112.5"-->
-<!--        map:cameraTargetLat="-33.796923"-->
-<!--        map:cameraTargetLng="150.922433"-->
-<!--        map:cameraTilt="30"-->
-<!--        map:cameraZoom="13"-->
-<!--        map:mapType="normal"-->
-<!--        map:uiCompass="false"-->
-<!--        map:uiRotateGestures="true"-->
-<!--        map:uiScrollGestures="false"-->
-<!--        map:uiTiltGestures="true"-->
-<!--        map:uiZoomControls="false"-->
-<!--        map:uiZoomGestures="true"/>-->
+<!--        android:layout_height="0dp"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/guide_h_70" />-->
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guide_h_70"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent=".7" />
 
     <com.aoinc.nearbyplaces2.view.custom.PermissionDeniedView
         android:id="@+id/permission_denied_view"
@@ -43,3 +103,23 @@
         android:visibility="invisible"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <!--    <fragment xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--        xmlns:map="http://schemas.android.com/apk/res-auto"-->
+    <!--        android:name="com.google.android.gms.maps.SupportMapFragment"-->
+    <!--        android:id="@+id/map"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="match_parent"-->
+    <!--        map:cameraBearing="112.5"-->
+    <!--        map:cameraTargetLat="-33.796923"-->
+    <!--        map:cameraTargetLng="150.922433"-->
+    <!--        map:cameraTilt="30"-->
+    <!--        map:cameraZoom="13"-->
+    <!--        map:mapType="normal"-->
+    <!--        map:uiCompass="false"-->
+    <!--        map:uiRotateGestures="true"-->
+    <!--        map:uiScrollGestures="false"-->
+    <!--        map:uiTiltGestures="true"-->
+    <!--        map:uiZoomControls="false"-->
+    <!--        map:uiZoomGestures="true"/>-->

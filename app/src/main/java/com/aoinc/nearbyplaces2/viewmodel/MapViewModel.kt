@@ -1,5 +1,6 @@
 package com.aoinc.nearbyplaces2.viewmodel
 
+import android.net.Network
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -7,6 +8,8 @@ import com.aoinc.nearbyplaces2.model.Geocode
 import com.aoinc.nearbyplaces2.model.NearbyPlaces
 import com.aoinc.nearbyplaces2.model.PlaceDetails
 import com.aoinc.nearbyplaces2.network.GooglePlacesRetrofit
+import com.aoinc.nearbyplaces2.util.NetworkConstants
+import com.google.android.gms.maps.model.LatLng
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -17,11 +20,12 @@ class MapViewModel : ViewModel() {
     val nearbyPlaceResults: MutableLiveData<NearbyPlaces> = MutableLiveData()
     val geocodeResults: MutableLiveData<Geocode> = MutableLiveData()
     val placeDetailsResults: MutableLiveData<PlaceDetails> = MutableLiveData()
+    lateinit var curLocation: LatLng
 
 //    private lateinit var nextPageToken: String
 //    val placeIndexMap: HashMap<String, MutableList<Int>> = hashMapOf()
 
-    fun getNearbyPlaces(queryMap: Map<String, String>) {
+    fun requestNearbyPlaces(queryMap: Map<String, String>) {
         compositeDisposable.add(
             GooglePlacesRetrofit.searchNearbyPlaces(queryMap)
                 .subscribeOn(Schedulers.io())
@@ -58,7 +62,7 @@ class MapViewModel : ViewModel() {
 //        }
 //    }
 
-    fun getGeocodeData(queryMap: Map<String, String>) {
+    fun requestGeocodeData(queryMap: Map<String, String>) {
         compositeDisposable.add(
             GooglePlacesRetrofit.getGeocodeData(queryMap)
                 .subscribeOn(Schedulers.io())
@@ -81,7 +85,7 @@ class MapViewModel : ViewModel() {
         )
     }
 
-    fun getPlaceDetails(queryMap: Map<String, String>) {
+    fun requestPlaceDetails(queryMap: Map<String, String>) {
         compositeDisposable.add(
             GooglePlacesRetrofit.getPlaceDetails(queryMap)
                 .subscribeOn(Schedulers.io())
@@ -102,5 +106,29 @@ class MapViewModel : ViewModel() {
                     Log.e("TAG_X", "place details exception -> ${it.localizedMessage}")
                 })
         )
+    }
+
+    fun updateLocation(location: LatLng) {
+        curLocation = location
+    }
+
+    fun getNearbyPlaces(radius: String, placeType: String = "") {
+
+        var keywords = ""
+
+        // TODO: update keywords based on place type for relevant queries
+//        when (placeType) {
+//            "" -> keywords = ""
+//        }
+
+        val queryMap = mapOf(
+            NetworkConstants.KEY_KEY to NetworkConstants.KEY_VALUE,
+            NetworkConstants.LOCATION_KEY to "${curLocation.latitude},${curLocation.longitude}",
+            NetworkConstants.RADIUS_KEY to radius,
+            NetworkConstants.TYPE_KEY to placeType,
+            NetworkConstants.KEYWORD_KEY to keywords
+        )
+
+        requestNearbyPlaces(queryMap)
     }
 }

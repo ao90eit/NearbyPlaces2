@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginHorizontal="8dp"
+    android:elevation="4dp"
+    app:shapeAppearanceOverlay="@style/PlaceDetailItem">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/place_name"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:autoSizeTextType="uniform"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@id/place_address"
+            app:layout_constraintEnd_toStartOf="@id/detail_guide_v_80"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_weight=".6"
+            tools:text="East Cobb Methodist Church" />
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/place_worship_icon"
+            android:layout_width="52dp"
+            android:layout_height="52dp"
+            app:layout_constraintStart_toEndOf="@id/detail_guide_v_80"
+            app:layout_constraintBottom_toBottomOf="@id/place_name"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/place_name"
+            tools:src="@drawable/ic_baseline_keyboard_arrow_up_24" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/place_address"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:autoSizeTextType="uniform"
+            app:layout_constraintBottom_toBottomOf="@id/detail_guide_h_50"
+            app:layout_constraintEnd_toStartOf="@id/detail_guide_v_80"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/place_name"
+            app:layout_constraintVertical_weight=".4"
+            tools:text="123 Extremely Fake St, Marietta, GA, USA" />
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/place_route_button"
+            android:layout_width="52dp"
+            android:layout_height="52dp"
+            app:layout_constraintBottom_toBottomOf="@id/place_address"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/detail_guide_v_80"
+            app:layout_constraintTop_toTopOf="@id/place_address"
+            tools:src="@drawable/ic_baseline_keyboard_arrow_up_24" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/photo_recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/detail_guide_h_50"
+            tools:listitem="@layout/photo_item" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/detail_guide_v_80"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent=".8" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/detail_guide_h_50"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent=".5" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>
