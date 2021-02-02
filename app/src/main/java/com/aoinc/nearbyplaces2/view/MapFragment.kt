@@ -14,10 +14,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.aoinc.nearbyplaces2.R
 import com.aoinc.nearbyplaces2.viewmodel.MapViewModel
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 
@@ -30,7 +27,7 @@ class MapFragment : Fragment(), LocationListener, OnMapReadyCallback {
     private lateinit var locationManager: LocationManager
 
     // Map
-    private lateinit var gMap: GoogleMap
+    private lateinit var gmap: GoogleMap
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -45,6 +42,7 @@ class MapFragment : Fragment(), LocationListener, OnMapReadyCallback {
         locationManager = view.context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
         // Load map
+//        val mapOptions = customizeMap()
         val mapFragment = childFragmentManager.findFragmentById(R.id.map_fragment) as SupportMapFragment
         mapFragment.getMapAsync(this)
     }
@@ -61,16 +59,17 @@ class MapFragment : Fragment(), LocationListener, OnMapReadyCallback {
     override fun onLocationChanged(location: Location) {
         Log.d("TAG_X", "current location -> LAT: ${location.latitude}, LONG: ${location.longitude}")
 
-        if (this::gMap.isInitialized) {
+        if (this::gmap.isInitialized) {
             val curLocation = LatLng(location.latitude, location.longitude)
-            gMap.addMarker(MarkerOptions().position(curLocation).title("My Location"))
-            gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(curLocation, 14f))
+            gmap.addMarker(MarkerOptions().position(curLocation).title("My Location"))
+            gmap.moveCamera(CameraUpdateFactory.newLatLngZoom(curLocation, 14f))
         }
     }
 
     override fun onMapReady(map: GoogleMap?) {
         map?.let {
-            gMap = it
+            gmap = it
+            customizeMap()
             enableLocationPolling(true)
         }
     }
@@ -78,5 +77,20 @@ class MapFragment : Fragment(), LocationListener, OnMapReadyCallback {
     override fun onStop() {
         super.onStop()
         enableLocationPolling(false)
+    }
+
+//    private fun customizeMap(): GoogleMapOptions =
+//        GoogleMapOptions()
+//            .zoomControlsEnabled(true)
+//            .compassEnabled(true)
+//            .mapToolbarEnabled(true)
+//            .maxZoomPreference(20f)
+//            .minZoomPreference(10f)
+
+    private fun customizeMap() {
+        gmap.setMaxZoomPreference(17f)
+        gmap.setMinZoomPreference(12f)
+        gmap.uiSettings.isZoomControlsEnabled = true
+        gmap.uiSettings.isCompassEnabled = true
     }
 }

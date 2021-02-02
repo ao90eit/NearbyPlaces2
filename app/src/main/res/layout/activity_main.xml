@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.MainActivity">
+    tools:context=".view.MainActivity"
+    xmlns:map="http://schemas.android.com/apk/res-auto">
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/test_image"
@@ -15,6 +16,25 @@
         android:id="@+id/main_fragment_containerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
+<!--    <fragment xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--        xmlns:map="http://schemas.android.com/apk/res-auto"-->
+<!--        android:name="com.google.android.gms.maps.SupportMapFragment"-->
+<!--        android:id="@+id/map"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        map:cameraBearing="112.5"-->
+<!--        map:cameraTargetLat="-33.796923"-->
+<!--        map:cameraTargetLng="150.922433"-->
+<!--        map:cameraTilt="30"-->
+<!--        map:cameraZoom="13"-->
+<!--        map:mapType="normal"-->
+<!--        map:uiCompass="false"-->
+<!--        map:uiRotateGestures="true"-->
+<!--        map:uiScrollGestures="false"-->
+<!--        map:uiTiltGestures="true"-->
+<!--        map:uiZoomControls="false"-->
+<!--        map:uiZoomGestures="true"/>-->
 
     <com.aoinc.nearbyplaces2.view.custom.PermissionDeniedView
         android:id="@+id/permission_denied_view"
