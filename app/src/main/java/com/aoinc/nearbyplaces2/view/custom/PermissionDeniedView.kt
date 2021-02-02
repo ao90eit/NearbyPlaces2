@@ -43,8 +43,3 @@ class PermissionDeniedView(context: Context, attributeSet: AttributeSet)
         }
     }
 }
-
-//val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-//val uri = Uri.fromParts("package", packageName, null)
-//intent.data = uri
-//startActivity(intent)

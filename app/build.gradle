@@ -60,6 +60,9 @@ dependencies {
     // Fragment Kotlin Extensions
     implementation 'androidx.fragment:fragment-ktx:1.2.5'
 
+    // Google Maps
+    implementation 'com.google.android.gms:play-services-maps:17.0.0'
+
     //LeakCanary
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.6'
 
