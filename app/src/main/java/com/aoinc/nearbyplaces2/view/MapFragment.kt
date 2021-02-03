@@ -26,7 +26,7 @@ import com.google.android.gms.maps.model.*
 import java.util.*
 
 class MapFragment : Fragment(), LocationListener, OnMapReadyCallback,
-    GoogleMap.OnMarkerClickListener {
+    GoogleMap.OnMarkerClickListener, GoogleMap.OnCameraMoveListener {
 
     // View Model
     private val mapViewModel: MapViewModel by activityViewModels()
@@ -39,6 +39,7 @@ class MapFragment : Fragment(), LocationListener, OnMapReadyCallback,
     private lateinit var gmap: GoogleMap
     private val markers: MutableList<Marker> = mutableListOf()
     private lateinit var selectedMarker: Marker
+    private var curZoom: Float = 13f
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -53,7 +54,6 @@ class MapFragment : Fragment(), LocationListener, OnMapReadyCallback,
         locationManager = view.context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
         // Load map
-//        val mapOptions = customizeMap()
         val mapFragment = childFragmentManager.findFragmentById(R.id.map_fragment) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
@@ -71,7 +71,6 @@ class MapFragment : Fragment(), LocationListener, OnMapReadyCallback,
     // Map will not even load without this permission, check not needed
     private fun enableLocationPolling(enabled: Boolean) {
         if (enabled)
-            // TODO: make this long and wide to avoid constant updates
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000L, 100f, this)
         else
             locationManager.removeUpdates(this)
@@ -88,15 +87,9 @@ class MapFragment : Fragment(), LocationListener, OnMapReadyCallback,
         mapViewModel.updateLocation(curLocation)
 
         if (this::gmap.isInitialized) {
-            gmap.moveCamera(CameraUpdateFactory.newLatLngZoom(curLocation, 13f))
+            gmap.moveCamera(CameraUpdateFactory.newLatLngZoom(curLocation, curZoom))
         }
     }
-
-//    mMap.addCircle(CircleOptions()
-//    .center(LatLng(currentLat, currentLong))
-//    .radius(40.0)
-//    .strokeColor(Color.parseColor("#168CCC"))
-//    .fillColor(Color.BLUE))
 
     override fun onMapReady(map: GoogleMap?) {
         map?.let {
@@ -111,14 +104,6 @@ class MapFragment : Fragment(), LocationListener, OnMapReadyCallback,
         enableLocationPolling(false)
     }
 
-//    private fun customizeMap(): GoogleMapOptions =
-//        GoogleMapOptions()
-//            .zoomControlsEnabled(true)
-//            .compassEnabled(true)
-//            .mapToolbarEnabled(true)
-//            .maxZoomPreference(20f)
-//            .minZoomPreference(10f)
-
     @SuppressLint("MissingPermission")
     private fun customizeMap() {
         gmap.setMaxZoomPreference(17f)
@@ -128,6 +113,7 @@ class MapFragment : Fragment(), LocationListener, OnMapReadyCallback,
         gmap.isMyLocationEnabled = true
         gmap.uiSettings.isMyLocationButtonEnabled = true
         gmap.setOnMarkerClickListener(this)
+        gmap.setOnCameraMoveListener(this)
     }
 
     private fun placeNearbyMarkers(placesList: List<NearbyPlaces.SearchResult>) {
@@ -150,7 +136,7 @@ class MapFragment : Fragment(), LocationListener, OnMapReadyCallback,
             )
 
             var iconId: Int = R.drawable.worship_general_71
-            // TODO: switch icon based on types data
+
             place.types?.let { type ->
                 place.name?.let { name ->
                     iconId = when {
@@ -218,12 +204,15 @@ class MapFragment : Fragment(), LocationListener, OnMapReadyCallback,
         mapViewModel.selectedPlaceIconId = tagData[1].toInt()
         mapViewModel.requestGeocodeData(queryMap)
 
-        // TODO: scale marker up and down
         selectedMarker.setIcon(BitmapDescriptorFactory.fromBitmap(
             resizeBitmap(mapViewModel.selectedPlaceIconId, 175, 175)))
 
         // does not consume this function
         // allows default behavior to run after this
         return false
+    }
+
+    override fun onCameraMove() {
+        curZoom = gmap.cameraPosition.zoom
     }
 }

@@ -29,10 +29,8 @@ object GooglePlacesRetrofit {
     private fun createGooglePlacesAPI(retrofit: Retrofit): GooglePlacesAPI =
         retrofit.create(GooglePlacesAPI::class.java)
 
-    // TODO: function for each query here
     fun searchNearbyPlaces(queryMap: Map<String, String>) = googlePlacesAPI.searchNearbyPlaces(queryMap)
     fun getGeocodeData(queryMap: Map<String, String>) = googlePlacesAPI.getGeocodeData(queryMap)
-    fun getfirstPhoto(queryMap: Map<String, String>) = googlePlacesAPI.getFirstPhoto(queryMap)
     fun getPlaceDetails(queryMap: Map<String, String>) = googlePlacesAPI.getPlaceDetails(queryMap)
 }
 
@@ -46,10 +44,6 @@ interface GooglePlacesAPI {
     // key, place_id
     @GET(NetworkConstants.GEOCODE_REQUEST_PATH)
     fun getGeocodeData(@QueryMap queryMap: Map<String, String>): Observable<Geocode>
-
-    // key, photoreference, maxwidth OR maxheight
-    @GET(NetworkConstants.PLACE_PHOTO_REQUEST_PATH)
-    fun getFirstPhoto(@QueryMap queryMap: Map<String, String>): Observable<Bitmap>
 
     // key, place_id
     @GET(NetworkConstants.PLACE_DETAILS_REQUEST_PATH)

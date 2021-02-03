@@ -17,6 +17,8 @@ import com.aoinc.nearbyplaces2.util.WorshipType
 import com.aoinc.nearbyplaces2.view.custom.PermissionDeniedView
 import com.aoinc.nearbyplaces2.viewmodel.MapViewModel
 import com.google.android.material.slider.Slider
+import java.text.FieldPosition
+import java.text.NumberFormat
 import java.util.*
 
 class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
@@ -52,9 +54,14 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
 //        radiusSlider.setLabelFormatter { value: Float ->
 //            val format = NumberFormat.getNumberInstance()
-//            format.maximumFractionDigits = 1
-//            format.format(value/1000.0)
+//            format.maximumFractionDigits = 2
+//            format.
+//            format.format(value.toDouble()/1000.0, StringBuffer("km"), NumberFormat.FRACTION_FIELD)
 //        }
+
+        radiusSlider.setLabelFormatter { value: Float ->
+            return@setLabelFormatter "${value/1000f} km"
+        }
 
         //default
         worshipTypeButton.setImageResource(R.drawable.ic_infinity)
@@ -67,7 +74,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         }
 
         searchButton.setOnClickListener {
-            mapViewModel.curLocation?.let {
+            mapViewModel.curLocation.let {
                 mapViewModel.updateDetailsEnabled(false)
                 mapViewModel.getNearbyPlaces(radiusSlider.value.toString().trim(),
                     worshipType.toString().toLowerCase(Locale.ROOT))
@@ -86,7 +93,6 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         super.onStart()
 
         // Get location permissions and run app
-        // TODO: do I need to skip this if the app is already running??
         if (hasLocationPermission())
             onLocationPermissionsGranted()
         else
@@ -108,7 +114,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), PERMISSION_REQUEST_CODE)
 
     private fun onLocationPermissionsGranted() {
-        permissionDeniedOverlay.visibility = View.INVISIBLE
+        permissionDeniedOverlay.visibility = View.GONE
         loadMapFragment()   // continue loading program
     }
 
@@ -137,7 +143,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
     }
 
     override fun onMenuItemClick(item: MenuItem): Boolean {
-        worshipType = when (item.title.toString().toUpperCase()) {
+        worshipType = when (item.title.toString().toUpperCase(Locale.ROOT)) {
             WorshipType.CHURCH.toString() -> WorshipType.CHURCH
             WorshipType.MOSQUE.toString() -> WorshipType.MOSQUE
             WorshipType.HINDU_TEMPLE.toString()
@@ -163,23 +169,5 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         })
 
         return true
-    }
-
-
-
-
-
-
-
-
-
-    // TEST PLACE DETAILS REQUEST
-    private fun getPlaceDetails(placeID: String) {
-        val queryMap = mapOf(
-            NetworkConstants.KEY_KEY to NetworkConstants.KEY_VALUE,
-            NetworkConstants.PLACE_ID_KEY to placeID
-        )
-
-        mapViewModel.requestPlaceDetails(queryMap)
     }
 }

@@ -57,7 +57,7 @@ class PlaceDetailFragment : Fragment() {
 
         photoRecyclerView = view.findViewById(R.id.photo_recyclerView)
         val snapHelper = LinearSnapHelper()
-        snapHelper.attachToRecyclerView(photoRecyclerView);
+        snapHelper.attachToRecyclerView(photoRecyclerView)
         photoRecyclerView.adapter = photoRecyclerAdapter
 
         mapViewModel.geocodeResults.observe(viewLifecycleOwner, {
@@ -83,10 +83,10 @@ class PlaceDetailFragment : Fragment() {
             // set icon in view
             worshipIconImageView.setImageResource(mapViewModel.selectedPlaceIconId)
 
-            // TODO: update photos recycler list
-
+            // enable detail view
             mapViewModel.updateDetailsEnabled(true)
 
+            // get photos after momentary pause
             runBlocking {
                 repeat(1) {
                     launch {
@@ -103,7 +103,7 @@ class PlaceDetailFragment : Fragment() {
                 for (p in photos)
                     p.photo_reference?.let {ref -> idList.add(ref)}
 
-                Log.d("TAG_X", idList[0].toString())
+                Log.d("TAG_X", idList[0])
                 photoRecyclerAdapter.updatePhotoList(idList)
             } ?: photoRecyclerAdapter.updatePhotoList(listOf("empty"))
         })

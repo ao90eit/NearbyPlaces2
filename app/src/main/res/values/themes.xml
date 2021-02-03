@@ -20,4 +20,8 @@
         <item name="cornerSizeBottomLeft">0dp</item>
         <item name="cornerSizeBottomRight">0dp</item>
     </style>
+
+    <style name="ImageButtonStyle">
+        <item name="android:background">@drawable/image_button_shape</item>
+    </style>
 </resources>
