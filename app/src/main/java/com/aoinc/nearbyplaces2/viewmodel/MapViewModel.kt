@@ -3,6 +3,7 @@ package com.aoinc.nearbyplaces2.viewmodel
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.aoinc.nearbyplaces2.R
 import com.aoinc.nearbyplaces2.model.Geocode
 import com.aoinc.nearbyplaces2.model.NearbyPlaces
 import com.aoinc.nearbyplaces2.model.PlaceDetails
@@ -21,7 +22,12 @@ class MapViewModel : ViewModel() {
     val nearbyPlaceResults: MutableLiveData<NearbyPlaces> = MutableLiveData()
     val geocodeResults: MutableLiveData<Geocode> = MutableLiveData()
     val placeDetailsResults: MutableLiveData<PlaceDetails> = MutableLiveData()
+
     lateinit var curLocation: LatLng
+
+    val shouldDisplayDetails: MutableLiveData<Boolean> = MutableLiveData(false)
+    var selectedPlaceName: String = ""
+    var selectedPlaceIconId: Int = R.drawable.worship_general_71
 
 //    private lateinit var nextPageToken: String
 //    val placeIndexMap: HashMap<String, MutableList<Int>> = hashMapOf()
@@ -142,5 +148,9 @@ class MapViewModel : ViewModel() {
 
         requestNearbyPlaces(queryMap)
         Log.d("TAG_X", "$queryMap")
+    }
+
+    fun updateDetailsEnabled(enabled: Boolean) {
+        shouldDisplayDetails.postValue(enabled)
     }
 }

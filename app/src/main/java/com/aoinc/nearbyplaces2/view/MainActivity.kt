@@ -17,6 +17,7 @@ import com.aoinc.nearbyplaces2.util.WorshipType
 import com.aoinc.nearbyplaces2.view.custom.PermissionDeniedView
 import com.aoinc.nearbyplaces2.viewmodel.MapViewModel
 import com.google.android.material.slider.Slider
+import java.util.*
 
 class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
@@ -34,7 +35,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
     // Connected Views
     private lateinit var permissionDeniedOverlay: PermissionDeniedView
-    private lateinit var detailFragment: View
+    private lateinit var detailFragmentView: View
     private lateinit var radiusSlider: Slider
     private lateinit var worshipTypeButton: ImageButton
     private lateinit var searchButton: Button
@@ -44,7 +45,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         setContentView(R.layout.activity_main)
 
         permissionDeniedOverlay = findViewById(R.id.permission_denied_view)
-        detailFragment = findViewById(R.id.detail_fragment_container)
+        detailFragmentView = findViewById(R.id.detail_fragment_container)
         radiusSlider = findViewById(R.id.search_radius_slider)
         worshipTypeButton = findViewById(R.id.place_type_menu_button)
         searchButton = findViewById(R.id.search_button)
@@ -67,10 +68,18 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
         searchButton.setOnClickListener {
             mapViewModel.curLocation?.let {
-                // TODO: fix place type input
-                mapViewModel.getNearbyPlaces(radiusSlider.value.toString().trim(), worshipType.toString().toLowerCase())
+                mapViewModel.updateDetailsEnabled(false)
+                mapViewModel.getNearbyPlaces(radiusSlider.value.toString().trim(),
+                    worshipType.toString().toLowerCase(Locale.ROOT))
             }
         }
+
+        mapViewModel.shouldDisplayDetails.observe(this, { enabled ->
+            if (enabled)
+                detailFragmentView.visibility = View.VISIBLE
+            else
+                detailFragmentView.visibility = View.GONE
+        })
 
         /*******  TESTS  *******/
 //        testImage = findViewById(R.id.test_image)

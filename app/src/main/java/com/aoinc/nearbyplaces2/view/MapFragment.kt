@@ -2,6 +2,8 @@ package com.aoinc.nearbyplaces2.view
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.location.Location
 import android.location.LocationListener
@@ -15,11 +17,16 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.aoinc.nearbyplaces2.R
 import com.aoinc.nearbyplaces2.model.NearbyPlaces
+import com.aoinc.nearbyplaces2.util.NetworkConstants
+import com.aoinc.nearbyplaces2.util.SearchConstants
+import com.aoinc.nearbyplaces2.util.WorshipType
 import com.aoinc.nearbyplaces2.viewmodel.MapViewModel
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
+import java.util.*
 
-class MapFragment : Fragment(), LocationListener, OnMapReadyCallback {
+class MapFragment : Fragment(), LocationListener, OnMapReadyCallback,
+    GoogleMap.OnMarkerClickListener {
 
     // View Model
     private val mapViewModel: MapViewModel by activityViewModels()
@@ -119,6 +126,7 @@ class MapFragment : Fragment(), LocationListener, OnMapReadyCallback {
         gmap.uiSettings.isCompassEnabled = true
         gmap.isMyLocationEnabled = true
         gmap.uiSettings.isMyLocationButtonEnabled = true
+        gmap.setOnMarkerClickListener(this)
     }
 
     private fun placeNearbyMarkers(placesList: List<NearbyPlaces.SearchResult>) {
@@ -135,17 +143,75 @@ class MapFragment : Fragment(), LocationListener, OnMapReadyCallback {
             place.geometry?.location?.lat?.let { lat = it }
             place.geometry?.location?.lng?.let { lng = it }
 
-            markers.add(gmap.addMarker(MarkerOptions()
+            val mark = gmap.addMarker(MarkerOptions()
                 .position(LatLng(lat,lng))
                 .title(place.name)
-//                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
-            ))
+            )
+
+            var iconId: Int = R.drawable.worship_general_71
+            // TODO: switch icon based on types data
+            place.types?.let { type ->
+                place.name?.let { name ->
+                    iconId = when {
+                        type.contains(WorshipType.CHURCH.toString().toLowerCase(Locale.ROOT)) -> R.drawable.christian
+                        type.contains(WorshipType.MOSQUE.toString().toLowerCase(Locale.ROOT)) -> R.drawable.islam
+                        type.contains(WorshipType.HINDU_TEMPLE.toString().toLowerCase(Locale.ROOT)) -> R.drawable.hindu
+                        type.contains(WorshipType.SYNAGOGUE.toString().toLowerCase(Locale.ROOT)) -> R.drawable.judaism
+                        type.any { s -> s in SearchConstants.BUDDHIST_LIST_KEYWORDS } ||
+                                name.toLowerCase(Locale.ROOT).contains("buddh") -> R.drawable.buddhist
+                        type.any { s -> s in SearchConstants.JAIN_LIST_KEYWORDS } ||
+                                name.toLowerCase(Locale.ROOT).contains("jain") -> R.drawable.jain2
+                        type.any { s -> s in SearchConstants.SHINTO_LIST_KEYWORDS } ||
+                                name.toLowerCase(Locale.ROOT).contains("shinto") -> R.drawable.shinto
+                        type.any { s -> s in SearchConstants.BAHAI_LIST_KEYWORDS } ||
+                                name.toLowerCase(Locale.ROOT).contains("bahai") -> R.drawable.bahai
+                        type.any { s -> s in SearchConstants.SIKH_LIST_KEYWORDS } ||
+                                name.toLowerCase(Locale.ROOT).contains("sikh") -> R.drawable.sikh
+                        type.any { s -> s in SearchConstants.TAO_LIST_KEYWORDS } ||
+                                name.toLowerCase(Locale.ROOT).contains("tao") -> R.drawable.tao
+                        type.any { s -> s in SearchConstants.PAGAN_LIST_KEYWORDS } ||
+                                name.toLowerCase(Locale.ROOT).contains("pagan") -> R.drawable.pagan
+                        type.any { s -> s in SearchConstants.CAO_DAI_LIST_KEYWORDS } ||
+                                name.toLowerCase(Locale.ROOT).contains("cao dai") -> R.drawable.cao_dai
+                        else -> R.drawable.worship_general_71
+                    }
+                }
+            }
+
+            mark.setIcon(BitmapDescriptorFactory.fromBitmap(resizeBitmap(iconId, 100, 100)))
+            mark.tag = place.place_id + ":" + iconId
+            markers.add(mark)
         }
+    }
+
+    fun resizeBitmap(iconId: Int, width: Int, height: Int): Bitmap {
+        val imageBitamp = BitmapFactory.decodeResource(resources, iconId)
+        val resizedBitmap = Bitmap.createScaledBitmap(imageBitamp, width, height, false)
+        return resizedBitmap
     }
 
     private fun removeAllMarkers() {
         for (m in markers)
             m.remove()
         markers.clear()
+    }
+
+    override fun onMarkerClick(marker: Marker?): Boolean {
+//        Log.d("TAG_X", marker?.tag.toString())
+
+        val tagData = marker?.tag.toString().split(":")
+
+        val queryMap = mapOf(
+            NetworkConstants.KEY_KEY to NetworkConstants.KEY_VALUE,
+            NetworkConstants.PLACE_ID_KEY to tagData[0]
+        )
+
+        marker?.title?.let { mapViewModel.selectedPlaceName = it }
+        mapViewModel.selectedPlaceIconId = tagData[1].toInt()
+        mapViewModel.requestGeocodeData(queryMap)
+
+        // does not consume this function
+        // allows default behavior to run after this
+        return false
     }
 }
