@@ -38,6 +38,7 @@ class MapFragment : Fragment(), LocationListener, OnMapReadyCallback,
     // Map
     private lateinit var gmap: GoogleMap
     private val markers: MutableList<Marker> = mutableListOf()
+    private lateinit var selectedMarker: Marker
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -197,6 +198,12 @@ class MapFragment : Fragment(), LocationListener, OnMapReadyCallback,
     }
 
     override fun onMarkerClick(marker: Marker?): Boolean {
+        if (this::selectedMarker.isInitialized)
+            selectedMarker.setIcon(BitmapDescriptorFactory.fromBitmap(
+                resizeBitmap(mapViewModel.selectedPlaceIconId, 100, 100)))
+
+        marker?.let { selectedMarker = it }
+
 //        Log.d("TAG_X", marker?.tag.toString())
 
         val tagData = marker?.tag.toString().split(":")
@@ -207,8 +214,13 @@ class MapFragment : Fragment(), LocationListener, OnMapReadyCallback,
         )
 
         marker?.title?.let { mapViewModel.selectedPlaceName = it }
+        mapViewModel.selectedPlaceId = tagData[0]
         mapViewModel.selectedPlaceIconId = tagData[1].toInt()
         mapViewModel.requestGeocodeData(queryMap)
+
+        // TODO: scale marker up and down
+        selectedMarker.setIcon(BitmapDescriptorFactory.fromBitmap(
+            resizeBitmap(mapViewModel.selectedPlaceIconId, 175, 175)))
 
         // does not consume this function
         // allows default behavior to run after this

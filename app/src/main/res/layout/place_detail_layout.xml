@@ -6,8 +6,7 @@
     android:layout_height="match_parent"
     android:layout_marginHorizontal="8dp"
     android:elevation="4dp"
-    app:shapeAppearanceOverlay="@style/PlaceDetailItem"
-    >
+    app:shapeAppearanceOverlay="@style/PlaceDetailItem">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -17,8 +16,9 @@
             android:id="@+id/place_name"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:autoSizeTextType="uniform"
+            android:layout_marginRight="8dp"
             android:autoSizeMaxTextSize="32sp"
+            android:autoSizeTextType="uniform"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@id/place_address"
             app:layout_constraintEnd_toStartOf="@id/detail_guide_v_80"
@@ -31,18 +31,21 @@
             android:id="@+id/place_worship_icon"
             android:layout_width="52dp"
             android:layout_height="52dp"
-            app:layout_constraintStart_toEndOf="@id/detail_guide_v_80"
-            app:layout_constraintBottom_toBottomOf="@id/place_name"
+            android:layout_marginVertical="2dp"
+            app:layout_constraintBottom_toTopOf="@id/place_route_button"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/place_name"
-            tools:src="@drawable/ic_baseline_keyboard_arrow_up_24" />
+            app:layout_constraintStart_toEndOf="@id/detail_guide_v_80"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@drawable/hindu" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/place_address"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:autoSizeTextType="uniform"
+            android:layout_marginVertical="8dp"
+            android:layout_marginRight="8dp"
             android:autoSizeMaxTextSize="24sp"
+            android:autoSizeTextType="uniform"
             app:layout_constraintBottom_toBottomOf="@id/detail_guide_h_50"
             app:layout_constraintEnd_toStartOf="@id/detail_guide_v_80"
             app:layout_constraintStart_toStartOf="parent"
@@ -54,17 +57,21 @@
             android:id="@+id/place_route_button"
             android:layout_width="52dp"
             android:layout_height="52dp"
-            app:layout_constraintBottom_toBottomOf="@id/place_address"
+            android:layout_marginVertical="2dp"
+            android:src="@drawable/ic_baseline_directions_24"
+            app:layout_constraintBottom_toTopOf="@id/detail_guide_h_50"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/detail_guide_v_80"
-            app:layout_constraintTop_toTopOf="@id/place_address"
-            android:src="@drawable/ic_baseline_directions_24" />
+            app:layout_constraintTop_toBottomOf="@id/place_worship_icon"
+            android:clickable="true" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/photo_recyclerView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:orientation="horizontal"
+            android:layout_marginTop="4dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

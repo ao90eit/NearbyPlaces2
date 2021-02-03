@@ -26,6 +26,7 @@ class MapViewModel : ViewModel() {
     lateinit var curLocation: LatLng
 
     val shouldDisplayDetails: MutableLiveData<Boolean> = MutableLiveData(false)
+    var selectedPlaceId: String = ""
     var selectedPlaceName: String = ""
     var selectedPlaceIconId: Int = R.drawable.worship_general_71
 
@@ -83,7 +84,7 @@ class MapViewModel : ViewModel() {
     }
 
     fun requestPlaceDetails(queryMap: Map<String, String>) {
-//        Log.d("TAG_X", "requesting place details")
+        Log.d("TAG_X", "requesting place details")
         compositeDisposable.add(
             GooglePlacesRetrofit.getPlaceDetails(queryMap)
                 .subscribeOn(Schedulers.io())

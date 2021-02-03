@@ -12,10 +12,18 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SnapHelper
 import com.aoinc.nearbyplaces2.R
+import com.aoinc.nearbyplaces2.util.NetworkConstants
+import com.aoinc.nearbyplaces2.view.adapter.PhotoRecyclerAdapter
 import com.aoinc.nearbyplaces2.viewmodel.MapViewModel
 import com.google.android.gms.maps.model.LatLng
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import java.util.concurrent.TimeUnit
 
 class PlaceDetailFragment : Fragment() {
 
@@ -28,6 +36,7 @@ class PlaceDetailFragment : Fragment() {
     private lateinit var mapRouteImageView: ImageView
 
     private lateinit var photoRecyclerView: RecyclerView
+    private val photoRecyclerAdapter = PhotoRecyclerAdapter(listOf())
 
     private lateinit var geoLocation: LatLng
 
@@ -47,6 +56,9 @@ class PlaceDetailFragment : Fragment() {
         mapRouteImageView = view.findViewById(R.id.place_route_button)
 
         photoRecyclerView = view.findViewById(R.id.photo_recyclerView)
+        val snapHelper = LinearSnapHelper()
+        snapHelper.attachToRecyclerView(photoRecyclerView);
+        photoRecyclerView.adapter = photoRecyclerAdapter
 
         mapViewModel.geocodeResults.observe(viewLifecycleOwner, {
             it.searchResults?.get(0)?.let { result ->
@@ -74,6 +86,26 @@ class PlaceDetailFragment : Fragment() {
             // TODO: update photos recycler list
 
             mapViewModel.updateDetailsEnabled(true)
+
+            runBlocking {
+                repeat(1) {
+                    launch {
+                        delay(500L)
+                        getPlaceDetails(mapViewModel.selectedPlaceId)
+                    }
+                }
+            }
+        })
+
+        mapViewModel.placeDetailsResults.observe(viewLifecycleOwner, {
+            it.searchResult?.photos?.let { photos ->
+                val idList: MutableList<String> = mutableListOf()
+                for (p in photos)
+                    p.photo_reference?.let {ref -> idList.add(ref)}
+
+                Log.d("TAG_X", idList[0].toString())
+                photoRecyclerAdapter.updatePhotoList(idList)
+            } ?: photoRecyclerAdapter.updatePhotoList(listOf("empty"))
         })
 
         mapRouteImageView.setOnClickListener{
@@ -92,5 +124,14 @@ class PlaceDetailFragment : Fragment() {
                 }
             }
         }
+    }
+
+    private fun getPlaceDetails(placeID: String) {
+        val queryMap = mapOf(
+            NetworkConstants.KEY_KEY to NetworkConstants.KEY_VALUE,
+            NetworkConstants.PLACE_ID_KEY to placeID
+        )
+
+        mapViewModel.requestPlaceDetails(queryMap)
     }
 }

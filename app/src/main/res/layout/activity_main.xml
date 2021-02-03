@@ -77,15 +77,8 @@
         android:clickable="true"
         android:focusable="true"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHeight_percent=".3"
+        app:layout_constraintHeight_percent=".35"
         tools:layout="@layout/place_detail_layout" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guide_h_70"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent=".7" />
 
     <com.aoinc.nearbyplaces2.view.custom.PermissionDeniedView
         android:id="@+id/permission_denied_view"
