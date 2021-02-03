@@ -25,6 +25,7 @@
         android:valueFrom="1000"
         android:valueTo="10000"
         android:stepSize="1000"
+        android:value="3000"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/place_type_menu_button"
         app:layout_constraintBottom_toTopOf="@id/barrier"
@@ -32,12 +33,13 @@
 
     <ImageButton
         android:id="@+id/place_type_menu_button"
-        android:layout_width="wrap_content"
+        android:layout_width="52dp"
         android:layout_height="52dp"
+        android:scaleType="fitCenter"
         app:layout_constraintBottom_toTopOf="@id/barrier"
         app:layout_constraintStart_toEndOf="@id/search_radius_slider"
         app:layout_constraintEnd_toStartOf="@id/search_button"
-        android:src="@drawable/ic_baseline_keyboard_arrow_up_24"
+        android:src="@drawable/ic_infinity"
         />
 
     <!--    <com.google.android.material.button.MaterialButton-->
@@ -71,7 +73,7 @@
         app:constraint_referenced_ids="detail_fragment_container" />
 
 
-    <fragment
+    <androidx.fragment.app.FragmentContainerView
         android:id="@+id/detail_fragment_container"
         android:name="com.aoinc.nearbyplaces2.view.PlaceDetailFragment"
         tools:layout="@layout/place_detail_layout"
@@ -79,6 +81,8 @@
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHeight_percent=".3"
+        android:clickable="true"
+        android:focusable="true"
         />
 
 <!--    <androidx.fragment.app.FragmentContainerView-->

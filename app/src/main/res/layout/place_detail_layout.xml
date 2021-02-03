@@ -6,7 +6,8 @@
     android:layout_height="match_parent"
     android:layout_marginHorizontal="8dp"
     android:elevation="4dp"
-    app:shapeAppearanceOverlay="@style/PlaceDetailItem">
+    app:shapeAppearanceOverlay="@style/PlaceDetailItem"
+    >
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

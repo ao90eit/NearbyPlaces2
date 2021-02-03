@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/type_christian"
+        android:icon="@drawable/ic_christian"
+        android:title="Church" />
+    <item
+        android:id="@+id/type_hindu"
+        android:icon="@drawable/ic_hindu"
+        android:title="Hindu Temple" />
+    <item
+        android:id="@+id/type_islam"
+        android:icon="@drawable/ic_islam"
+        android:title="Mosque" />
+    <item
+        android:id="@+id/type_judaism"
+        android:icon="@drawable/ic_judaism"
+        android:title="Synagogue" />
+    <item
+        android:id="@+id/type_buddhist"
+        android:icon="@drawable/ic_buddhist"
+        android:title="Buddhist Temple" />
+    <item
+        android:id="@+id/type_jain"
+        android:icon="@drawable/ic_jain2"
+        android:title="Jain Temple" />
+    <item
+        android:id="@+id/type_others"
+        android:icon="@drawable/worship_general_71"
+        android:title="Others" />
+    <item
+        android:id="@+id/type_all"
+        android:icon="@drawable/ic_infinity"
+        android:title="All" />
+
+
+<!--    <item-->
+<!--        android:id="@+id/type_bahai"-->
+<!--        android:icon="@drawable/ic_bahai"-->
+<!--        android:title="Bahai" />-->
+<!--    <item-->
+<!--        android:id="@+id/type_cao_dai"-->
+<!--        android:icon="@drawable/ic_cao_dai"-->
+<!--        android:title="Cao Dai" />-->
+<!--    <item-->
+<!--        android:id="@+id/type_pagan"-->
+<!--        android:icon="@drawable/ic_pagan"-->
+<!--        android:title="Pagan" />-->
+<!--    <item-->
+<!--        android:id="@+id/type_shinto"-->
+<!--        android:icon="@drawable/ic_shinto"-->
+<!--        android:title="Shinto" />-->
+<!--    <item-->
+<!--        android:id="@+id/type_sikh"-->
+<!--        android:icon="@drawable/ic_sikh"-->
+<!--        android:title="Sikh" />-->
+<!--    <item-->
+<!--        android:id="@+id/type_tao"-->
+<!--        android:icon="@drawable/ic_tao"-->
+<!--        android:title="Tao" />-->
+</menu>

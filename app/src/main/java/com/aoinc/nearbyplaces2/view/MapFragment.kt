@@ -2,6 +2,7 @@ package com.aoinc.nearbyplaces2.view
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Color
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
@@ -16,10 +17,7 @@ import com.aoinc.nearbyplaces2.R
 import com.aoinc.nearbyplaces2.model.NearbyPlaces
 import com.aoinc.nearbyplaces2.viewmodel.MapViewModel
 import com.google.android.gms.maps.*
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
-import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.*
 
 class MapFragment : Fragment(), LocationListener, OnMapReadyCallback {
 
@@ -32,7 +30,6 @@ class MapFragment : Fragment(), LocationListener, OnMapReadyCallback {
 
     // Map
     private lateinit var gmap: GoogleMap
-    private lateinit var userMarker: Marker
     private val markers: MutableList<Marker> = mutableListOf()
 
     override fun onCreateView(
@@ -67,22 +64,31 @@ class MapFragment : Fragment(), LocationListener, OnMapReadyCallback {
     private fun enableLocationPolling(enabled: Boolean) {
         if (enabled)
             // TODO: make this long and wide to avoid constant updates
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000L, 20f, this)
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000L, 100f, this)
         else
             locationManager.removeUpdates(this)
     }
 
     override fun onLocationChanged(location: Location) {
-        Log.d("TAG_X", "current location -> LAT: ${location.latitude}, LONG: ${location.longitude}")
-        curLocation = LatLng(location.latitude, location.longitude)
+//        Log.d("TAG_X", "current location -> LAT: ${location.latitude}, LONG: ${location.longitude}")
+        val newLocation = LatLng(location.latitude, location.longitude)
+        if (this::curLocation.isInitialized)
+            if (newLocation == curLocation)
+                return
+
+        curLocation = newLocation
         mapViewModel.updateLocation(curLocation)
 
         if (this::gmap.isInitialized) {
-            if (this::userMarker.isInitialized) userMarker.remove()
-            userMarker = gmap.addMarker(MarkerOptions().position(curLocation).title("My Location"))
-            gmap.moveCamera(CameraUpdateFactory.newLatLngZoom(curLocation, 12f))
+            gmap.moveCamera(CameraUpdateFactory.newLatLngZoom(curLocation, 13f))
         }
     }
+
+//    mMap.addCircle(CircleOptions()
+//    .center(LatLng(currentLat, currentLong))
+//    .radius(40.0)
+//    .strokeColor(Color.parseColor("#168CCC"))
+//    .fillColor(Color.BLUE))
 
     override fun onMapReady(map: GoogleMap?) {
         map?.let {
@@ -105,18 +111,21 @@ class MapFragment : Fragment(), LocationListener, OnMapReadyCallback {
 //            .maxZoomPreference(20f)
 //            .minZoomPreference(10f)
 
+    @SuppressLint("MissingPermission")
     private fun customizeMap() {
         gmap.setMaxZoomPreference(17f)
         gmap.setMinZoomPreference(7f)
 //        gmap.uiSettings.isZoomControlsEnabled = true
         gmap.uiSettings.isCompassEnabled = true
+        gmap.isMyLocationEnabled = true
+        gmap.uiSettings.isMyLocationButtonEnabled = true
     }
 
     private fun placeNearbyMarkers(placesList: List<NearbyPlaces.SearchResult>) {
         // clear first
         removeAllMarkers()
 
-        Log.d("TAG_X", "in place markers")
+//        Log.d("TAG_X", "in place markers")
 
         // add second
         for (place in placesList) {

@@ -3,19 +3,22 @@ package com.aoinc.nearbyplaces2.view
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
+import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 import android.widget.ImageButton
+import android.widget.PopupMenu
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.aoinc.nearbyplaces2.R
 import com.aoinc.nearbyplaces2.util.NetworkConstants
+import com.aoinc.nearbyplaces2.util.WorshipType
 import com.aoinc.nearbyplaces2.view.custom.PermissionDeniedView
 import com.aoinc.nearbyplaces2.viewmodel.MapViewModel
 import com.google.android.material.slider.Slider
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
     // View Model
     private val mapViewModel: MapViewModel by viewModels()
@@ -25,6 +28,9 @@ class MainActivity : AppCompatActivity() {
 
     // Fragments
     private val mapFragment = MapFragment()
+
+    // View Data
+    private var worshipType: WorshipType = WorshipType.ALL
 
     // Connected Views
     private lateinit var permissionDeniedOverlay: PermissionDeniedView
@@ -48,15 +54,21 @@ class MainActivity : AppCompatActivity() {
 //            format.maximumFractionDigits = 1
 //            format.format(value/1000.0)
 //        }
-        
+
+        //default
+        worshipTypeButton.setImageResource(R.drawable.ic_infinity)
+
         worshipTypeButton.setOnClickListener {
-            // TODO: inflate place type menu here
+            val popupMenu = PopupMenu(this, worshipTypeButton)
+            popupMenu.menuInflater.inflate(R.menu.worship_selector_menu, popupMenu.menu)
+            popupMenu.setOnMenuItemClickListener(this)
+            popupMenu.show()
         }
 
         searchButton.setOnClickListener {
             mapViewModel.curLocation?.let {
                 // TODO: fix place type input
-                mapViewModel.getNearbyPlaces(radiusSlider.value.toString().trim(), "church")
+                mapViewModel.getNearbyPlaces(radiusSlider.value.toString().trim(), worshipType.toString().toLowerCase())
             }
         }
 
@@ -138,6 +150,37 @@ class MainActivity : AppCompatActivity() {
                     onLocationPermissionsDenied()
             }
     }
+
+    override fun onMenuItemClick(item: MenuItem): Boolean {
+        worshipType = when (item.title.toString().toUpperCase()) {
+            WorshipType.CHURCH.toString() -> WorshipType.CHURCH
+            WorshipType.MOSQUE.toString() -> WorshipType.MOSQUE
+            WorshipType.HINDU_TEMPLE.toString()
+                .replace("_", " ") -> WorshipType.HINDU_TEMPLE
+            WorshipType.SYNAGOGUE.toString() -> WorshipType.SYNAGOGUE
+            WorshipType.OTHERS.toString() -> WorshipType.OTHERS
+            WorshipType.BUDDHIST_TEMPLE.toString()
+                .replace("_", " ") -> WorshipType.BUDDHIST_TEMPLE
+            WorshipType.JAIN_TEMPLE.toString()
+                .replace("_", " ") -> WorshipType.JAIN_TEMPLE
+            else -> WorshipType.ALL
+        }
+
+        worshipTypeButton.setImageResource(when (worshipType) {
+            WorshipType.CHURCH -> R.drawable.ic_christian
+            WorshipType.MOSQUE -> R.drawable.ic_islam
+            WorshipType.HINDU_TEMPLE -> R.drawable.ic_hindu
+            WorshipType.SYNAGOGUE -> R.drawable.ic_judaism
+            WorshipType.OTHERS -> R.drawable.worship_general_71
+            WorshipType.BUDDHIST_TEMPLE -> R.drawable.ic_buddhist
+            WorshipType.JAIN_TEMPLE -> R.drawable.ic_jain2
+            else -> R.drawable.ic_infinity
+        })
+
+        return true
+    }
+
+
 
 
 
